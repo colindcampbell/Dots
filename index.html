@@ -1,0 +1,51 @@
+<!doctype html>
+<!-- Making a 3x3 grid with clickable divs in Angular -->
+
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Dots</title>
+
+	
+	<script src="angular.min.js"></script>
+	<script src="app.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+
+</head>
+<body x-ng-app="" x-ng-controller ="DotsController" x-ng-init="init(4)">
+	
+	<div class="boardSelect">
+		<input class="bSize" x-ng-model="newSize" maxlength="1" placeholder="SIZE"><button x-ng-click="init(newSize);">✓</button>
+	</div>
+
+		
+
+		<div class="clear"></div>
+
+	<div class="main" x-ng-style="gameBoard">
+		<div class="row" x-ng-repeat="r in board track by $index">
+			<div x-ng-repeat="cell in r track by $index" x-ng-click="click($parent.$index,$index);" x-ng-class=
+			"{
+			left:true,
+			dots:$parent.$even&&$even,
+			linesH:$parent.$even&&$odd,
+			linesV:$parent.$odd&&$even,
+			squares:$parent.$odd&&$odd,
+			linesHclicked:cell=='H',
+			linesVclicked:cell=='H',
+			point:cell==4
+			}">{{cell}}
+			</div>
+		</div>
+	</div>
+
+	
+
+	<div class="clear"></div>
+
+	<!-- <div x-ng-class="{}"></div> -->
+	
+
+</body>
+</html>

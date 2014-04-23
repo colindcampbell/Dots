@@ -1,0 +1,32 @@
+body{margin: 0px; background-color: #aaaaaa}
+button{height: 27px; border: 2px solid black; border-radius: 4px;cursor: pointer;font-size: 16px}
+h2{text-align: center;margin: 2px 0px 2px 0px; font-family: tahoma;font-size: 20px}
+input{height: 20px; border: 2px solid black; border-radius: 4px;font-family: tahoma;font-size: 14px;}
+.bSize{width: 34px;text-align: center;margin-bottom: 0px}
+.boardSelect button{width: 30px; margin-bottom: 0px;margin-left: 5px}
+.boardSelect{width: 75px; margin: 0px auto 7px auto;font-family: tahoma;font-size: 20px}
+
+.dots{background-color: black;width: 6px;height:6px;border-radius: 3px;}
+.squares{background-color: #fff;width: 30px;height: 30px;font-size: 0px;text-align: center;color: #ddd}
+
+.linesH{background-color: white;width: 30px;height:6px;cursor:pointer;color:rgba(0,0,0,0);}
+.linesH:hover{background-color: #aaa;}
+.linesHclicked{background-color: #666;}
+.linesHclicked:hover{background-color: #666;}
+
+.linesV{background-color: white;width: 6px;height:30px;cursor:pointer;color:rgba(0,0,0,0);}
+.linesV:hover{background-color: #aaa}
+.linesVclicked{background-color: #666;}
+.linesVclicked:hover{background-color: #666;}
+
+
+
+.left{float: left;border-radius: 3px;}
+.row{clear:both;}
+.empty{color:#999;background-color: white}
+
+.main{margin:0px auto;box-shadow: 3px 3px 15px black;border: 4px solid #333;padding: 6px;border-radius: 10px;background-color: white}
+.point{background-color: lime}
+
+.player1{float: left}
+.player2{float: right;}
