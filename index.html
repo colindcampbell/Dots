@@ -1,50 +1,82 @@
 <!doctype html>
-<!-- Making a 3x3 grid with clickable divs in Angular -->
 
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<title>Dots</title>
 
-	
+	<link href='https://fonts.googleapis.com/css?family=Josefin+Sans:600' rel='stylesheet' type='text/css'>
 	<script src="angular.min.js"></script>
 	<script src="app.js"></script>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	
 
 
 </head>
 <body x-ng-app="" x-ng-controller ="DotsController" x-ng-init="init(4)">
 	
-	<div class="boardSelect">
-		<input class="bSize" x-ng-model="newSize" maxlength="1" placeholder="SIZE"><button x-ng-click="init(newSize);">✓</button>
+	
+<div class="game" x-ng-style="wholeGame">
+		
+	<div x-ng-class="{leftPlayer:true,leftTurn:turn}">
+		<h2>Player 1 </h2>
+		
+		
+		{{player1score}}
+		
+		<div class="flashL" x-ng-if="player1wins">Winner</div>
+	
 	</div>
-
+	
 		
 
-		<div class="clear"></div>
 
-	<div class="main" x-ng-style="gameBoard">
-		<div class="row" x-ng-repeat="r in board track by $index">
-			<div x-ng-repeat="cell in r track by $index" x-ng-click="click($parent.$index,$index);" x-ng-class=
-			"{
-			left:true,
-			dots:$parent.$even&&$even,
-			linesH:$parent.$even&&$odd,
-			linesV:$parent.$odd&&$even,
-			squares:$parent.$odd&&$odd,
-			linesHclicked:cell=='H',
-			linesVclicked:cell=='H',
-			point:cell==4
-			}">{{cell}}
+	<div class="mid" x-ng-style="center">
+		
+		<div class="main" x-ng-style="gameBoard">
+			
+			<div class="row" x-ng-repeat="r in board track by $index">
+				<div x-ng-repeat="cell in r track by $index" 
+				x-ng-click="click($parent.$index,$index);" x-ng-class=
+				"{
+				left:true,
+				dots:$parent.$even&&$even,
+				linesH:$parent.$even&&$odd,
+				linesV:$parent.$odd&&$even,
+				squares:$parent.$odd&&$odd,
+				linesHclicked:cell=='H',
+				linesVclicked:cell=='H',
+				point1:cell==8,
+				point2:cell==9
+				}">
+				</div>
 			</div>
 		</div>
 	</div>
 
 	
 
-	<div class="clear"></div>
+	<div x-ng-class="{rightPlayer:true,rightTurn:!turn}">
+		<h2>Player 2</h2>
+		
+		{{player2score}}
+		
+		<div class="flashR" x-ng-if="player2wins">Winner</div>
+	</div>
+	
+</div>
+	
+</div>
 
-	<!-- <div x-ng-class="{}"></div> -->
+<div class="clear"></div>
+
+<div class="boardSelect">
+	
+		<button class="playAgain" x-ng-if="player1wins||player2wins" x-ng-click="init(size);">Play Again</button>
+	
+	<input class="bSize" x-ng-model="newSize" maxlength="1" placeholder="SIZE">
+	<button class="sizeButton" x-ng-click="init(newSize);">✓</button>
+</div>
 	
 
 </body>
