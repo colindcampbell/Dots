@@ -38,7 +38,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 			var lastGame = games[lastGameKey];
 			if(lastGame.waiting){
 				lastGame = dotsRef.child(lastGameKey);
-				lastGame.set( {turn:true, player1score:16, player2score:16, player1wins:false, player2wins:false, board:myBoard} );
+				lastGame.set( {player1:'Player 1',player2:'Player 2',turn:true, player1score:0, player2score:0, player1wins:false, player2wins:false, board:myBoard} );
 			}
 			else{
 				lastGame = dotsRef.push( {waiting:true } )
@@ -233,6 +233,17 @@ var GameApp = angular.module('GameApp', ['firebase'])
 
 	}//end of reset
 
+	$scope.changeName = function(){
+
+		$scope.game.player1 = $scope.name1;
+		$scope.game.$save();
+	}
+
+	$scope.changeName2 = function(){
+
+		$scope.game.player2 = $scope.name2;
+		$scope.game.$save();
+	}
 
 
 

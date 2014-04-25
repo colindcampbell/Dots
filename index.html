@@ -21,13 +21,22 @@
 <div class="game" x-ng-style="wholeGame">
 		
 	<div x-ng-class="{leftPlayer:true,leftTurn:game.turn}">
-		<h2>Player 1 </h2>
-		
+		<h2>{{game.player1}}</h2>
 		
 		{{game.player1score}}
+
 		
 		<div class="flashL" x-ng-if="game.player1wins">Winner</div>
 		<div class="flashL" x-ng-if="game.waiting">Waiting</div>
+
+
+		<div x-ng-class="{name:true, hidden:game.waiting==true||game.player1!='Player 1'}">
+			<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name1"/><button class="sizeButton" x-ng-click="changeName();" >✓</button>
+		</div>
+		
+		
+		
+		
 	</div>
 	
 		
@@ -58,12 +67,17 @@
 
 	
 
-	<div x-ng-class="{rightPlayer:true,rightTurn:!game.turn}">
-		<h2>Player 2</h2>
+	<div x-ng-class="{rightPlayer:true,rightTurn:!game.waiting&&!game.turn}">
+		<h2>{{game.player2}}</h2>
 		
 		{{game.player2score}}
 		
 		<div class="flashR" x-ng-if="game.player2wins">Winner</div>
+		<div class="flashR" x-ng-if="game.waiting">Waiting</div>
+
+		<div x-ng-class="{name:true, hidden:game.waiting==true||game.player2!='Player 2'}">
+			<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name2"/><button class="sizeButton" x-ng-click="changeName2();" >✓</button>
+		</div>
 	</div>
 	
 </div>
