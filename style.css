@@ -1,4 +1,4 @@
-body{margin: 0px; background-color: #aaaaaa; font-family:'Josefin Sans', tahoma}
+body{margin: 0px; background-color: #aaaaaa; font-family:'Josefin Sans', tahoma;-webkit-animation: fadeIn 1s ease-in;animation: fadeIn 1s ease-in;}
 button{height: 26px; border: 2px solid black; border-radius: 4px;cursor: pointer;font-size: 16px}
 h2{text-align: center;margin: 2px 0px 7px 0px;font-size: 30px;}
 input{height: 20px; border: 2px solid black; border-radius: 4px;font-family: 'Josefin Sans',tahoma;font-size: 14px;}
@@ -96,6 +96,25 @@ p{font-size: 16px;}
 
   25%, 75% {
     opacity: 0;
+  }
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
 

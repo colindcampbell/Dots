@@ -7,25 +7,27 @@
 
 	<link href='https://fonts.googleapis.com/css?family=Josefin+Sans:600' rel='stylesheet' type='text/css'>
 	<script src="angular.min.js"></script>
+	<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+	<script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
 	<script src="app.js"></script>
 	<link rel="stylesheet" type="text/css" href="style.css">
 	
 
 
 </head>
-<body x-ng-app="" x-ng-controller ="DotsController" x-ng-init="init(4)">
+<body x-ng-app="GameApp" x-ng-controller ="DotsController" x-ng-init="init(5)">
 	
 	
 <div class="game" x-ng-style="wholeGame">
 		
-	<div x-ng-class="{leftPlayer:true,leftTurn:turn}">
+	<div x-ng-class="{leftPlayer:true,leftTurn:game.turn}">
 		<h2>Player 1 </h2>
 		
 		
-		{{player1score}}
+		{{game.player1score}}
 		
-		<div class="flashL" x-ng-if="player1wins">Winner</div>
-	
+		<div class="flashL" x-ng-if="game.player1wins">Winner</div>
+		<div class="flashL" x-ng-if="game.waiting">Waiting</div>
 	</div>
 	
 		
@@ -35,7 +37,7 @@
 		
 		<div class="main" x-ng-style="gameBoard">
 			
-			<div class="row" x-ng-repeat="r in board track by $index">
+			<div class="row" x-ng-repeat="r in game.board track by $index">
 				<div x-ng-repeat="cell in r track by $index" 
 				x-ng-click="click($parent.$index,$index);" x-ng-class=
 				"{
@@ -56,12 +58,12 @@
 
 	
 
-	<div x-ng-class="{rightPlayer:true,rightTurn:!turn}">
+	<div x-ng-class="{rightPlayer:true,rightTurn:!game.turn}">
 		<h2>Player 2</h2>
 		
-		{{player2score}}
+		{{game.player2score}}
 		
-		<div class="flashR" x-ng-if="player2wins">Winner</div>
+		<div class="flashR" x-ng-if="game.player2wins">Winner</div>
 	</div>
 	
 </div>
@@ -72,10 +74,10 @@
 
 <div class="boardSelect">
 	
-		<button class="playAgain" x-ng-if="player1wins||player2wins" x-ng-click="init(size);">Play Again</button>
+		<button class="playAgain" x-ng-if="game.player1wins||game.player2wins" x-ng-click="reset();">Play Again</button>
 	
-	<input class="bSize" x-ng-model="newSize" maxlength="1" placeholder="SIZE">
-	<button class="sizeButton" x-ng-click="init(newSize);">✓</button>
+	<!-- <input class="bSize" x-ng-model="newSize" maxlength="1" placeholder="SIZE">
+	<button class="sizeButton" x-ng-click="init(newSize);">✓</button> -->
 </div>
 	
 

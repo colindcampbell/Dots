@@ -1,18 +1,64 @@
+var myBoard=[];
+var size=5;
+	for(i=0;i<size*2+5;i++){
+		myBoard.push([]);
+		for(j=0;j<size*2+1;j++){
+			if((i%2+j%2)==2){
+				myBoard[i].push(0);
+			}
+			else{
+				myBoard[i].push('');
+			}
+		}
+	};
+	console.log(myBoard);
 
-function DotsController($scope){
+var GameApp = angular.module('GameApp', ['firebase'])
 
-	$scope.turn=true;
+.controller('DotsController', function($scope, $firebase){
+
+	
+
+	var dotsRef = new Firebase('https://dotsgame.firebaseio.com/games');
+	var lastGame;
+
+	dotsRef.once('value', function(gamesSnapshot){
+
+		var games = gamesSnapshot.val();
+
+		if(games==null){
+
+			lastGame = dotsRef.push( {waiting:true} );
+			console.log(lastGame);
+
+		}
+		else{
+			var keys = Object.keys(games);
+			var lastGameKey = keys[keys.length-1];
+			var lastGame = games[lastGameKey];
+			if(lastGame.waiting){
+				lastGame = dotsRef.child(lastGameKey);
+				lastGame.set( {turn:true, player1score:16, player2score:16, player1wins:false, player2wins:false, board:myBoard} );
+			}
+			else{
+				lastGame = dotsRef.push( {waiting:true } )
+			}
+		$scope.game = $firebase(lastGame);
+
+		}
+		
+	});
+
+
+
 
 	$scope.init=function(size){
 
 
 	$scope.size=size;
 	$scope.gameWidth=$scope.size*36+6;
+	
 
-	// $scope.colors1=["#f23d70","#ed002f","#ad153c","#dd0000","#ff3500","#ff5900","#ff8145","#ff9a40", "#ffc300","#fff345"];
-	// $scope.colors2=["#00ff00","#0000ff","#ff00ff"];
-	// $scope.cColor1=$scope.colors1[0];
-	// $scope.cColor2=$scope.colors2[0];
 
 
 	$scope.gameBoard ={width:$scope.gameWidth+'px',height:$scope.gameWidth+72+'px'};
@@ -20,18 +66,18 @@ function DotsController($scope){
 	$scope.wholeGame ={width:$scope.gameWidth+277+'px'};
 
 
-	$scope.board=[];
-	for(i=0;i<$scope.size*2+5;i++){
-		$scope.board.push([]);
-		for(j=0;j<$scope.size*2+1;j++){
-			if((i%2+j%2)==2){
-				$scope.board[i].push(0);
-			}
-			else{
-				$scope.board[i].push('');
-			}
-		}
-	};
+	// $scope.game.board=[];
+	// for(i=0;i<$scope.size*2+5;i++){
+	// 	$scope.board.push([]);
+	// 	for(j=0;j<$scope.size*2+1;j++){
+	// 		if((i%2+j%2)==2){
+	// 			$scope.board[i].push(0);
+	// 		}
+	// 		else{
+	// 			$scope.board[i].push('');
+	// 		}
+	// 	}
+	// };
 
 	// $scope.board=[
 	
@@ -47,21 +93,18 @@ function DotsController($scope){
 		
 	// ];
 
-	$scope.player1score=0;
-	$scope.player2score=0;
-	$scope.player1wins=false;
-	$scope.player2wins=false;
+	
 	
 }//end of init funciton
 
 
 	$scope.click = function(row,col){
 
-		if($scope.player1wins||$scope.player2wins){
+		if($scope.game.player1wins||$scope.game.player2wins){
 			return;
 		}
 
-		if($scope.board[row][col]=='H'){
+		if($scope.game.board[row][col]=='H'){
 			return;
 		}
 
@@ -69,78 +112,79 @@ function DotsController($scope){
 			return;
 		}
 
-		$scope.board[row][col]='H';
+		$scope.game.board[row][col]='H';
 
 		if(row%2===0){
 			if(row>0){
-				$scope.tempUp=$scope.board[row-1][col];
+				$scope.tempUp=$scope.game.board[row-1][col];
 				for(i=0;i<4;i++){
-					if($scope.board[row-1][col]==i){
+					if($scope.game.board[row-1][col]==i){
 						$scope.tempUp++;
 						//console.log("up added");
 					}
 				}
-				$scope.board[row-1][col]=$scope.tempUp;
+				$scope.game.board[row-1][col]=$scope.tempUp;
 				
 			}
 			if(row<$scope.size*2+3){
-				$scope.tempDown=$scope.board[row+1][col];
+				$scope.tempDown=$scope.game.board[row+1][col];
 				for(i=0;i<4;i++){
-					if($scope.board[row+1][col]==i){
+					if($scope.game.board[row+1][col]==i){
 						$scope.tempDown++;
 						//console.log("down added");
 					}
 				}
-				$scope.board[row+1][col]=$scope.tempDown;
+				$scope.game.board[row+1][col]=$scope.tempDown;
 			}
 		$scope.checkBox();
 		}
 		else{
 			if (col<$scope.size*2) {
-				$scope.tempRight=$scope.board[row][col+1];
+				$scope.tempRight=$scope.game.board[row][col+1];
 				for(i=0;i<4;i++){
-					if($scope.board[row][col+1]==i){
+					if($scope.game.board[row][col+1]==i){
 						$scope.tempRight++;
 						//console.log("right added");
 					}
 				}
-				$scope.board[row][col+1]=$scope.tempRight;
+				$scope.game.board[row][col+1]=$scope.tempRight;
 				
 			};
 			if (col>0) {
-				$scope.tempLeft=$scope.board[row][col-1];
+				$scope.tempLeft=$scope.game.board[row][col-1];
 				for(i=0;i<4;i++){
-					if($scope.board[row][col-1]==i){
+					if($scope.game.board[row][col-1]==i){
 						$scope.tempLeft++;
 						//console.log("left added");
 					}
 				}
-				$scope.board[row][col-1]=$scope.tempLeft;
+				$scope.game.board[row][col-1]=$scope.tempLeft;
 				
 			};
 		$scope.checkBox();
 		}
+		$scope.game.$save();
 	}//end of click function
 
 	$scope.checkBox = function(row, col){
-		if ($scope.turn) {
+		if ($scope.game.turn) {
 			var temp = 0;
 			for(i=1;i<$scope.size*2+4;i++){
 				for (j=1;j<$scope.size*2;j++) {
-					if ($scope.board[i][j]==4) {
-						$scope.player1score++;
+					if ($scope.game.board[i][j]==4) {
+						$scope.game.player1score++;
 						temp++;
-						$scope.board[i][j]=8;
-						console.log($scope.player1score);
-						if ($scope.player1score>($scope.size*($scope.size+2))/2) {
+						$scope.game.board[i][j]=8;
+						console.log($scope.game.player1score);
+						if ($scope.game.player1score>($scope.size*($scope.size+2))/2) {
 							// console.log("Player 1 wins");
-							$scope.player1wins=true;
+							$scope.game.player1wins=true;
 						}
 					}
 				}
 			}
 			if (temp==0) {
-				$scope.turn=false;
+				$scope.game.turn=false;
 				// console.log("switched turns to p2");
 				return;
 			}
@@ -153,21 +197,21 @@ function DotsController($scope){
 			var temp2 = 0;
 			for(k=1;k<$scope.size*2+4;k++){
 				for (l=1;l<$scope.size*2;l++) {
-					if ($scope.board[k][l]==4) {
-						$scope.player2score++;
+					if ($scope.game.board[k][l]==4) {
+						$scope.game.player2score++;
 						temp2++;
-						$scope.board[k][l]=9;
-						console.log($scope.player2score);
-						if ($scope.player2score>($scope.size*($scope.size+2))/2) {
+						$scope.game.board[k][l]=9;
+						console.log($scope.game.player2score);
+						if ($scope.game.player2score>($scope.size*($scope.size+2))/2) {
 							// console.log("Player 2 wins");
-							$scope.player2wins=true;
+							$scope.game.player2wins=true;
 
 						}
 					}
 				}
 			}
 			if (temp2==0) {
-				$scope.turn=true;
+				$scope.game.turn=true;
 				// console.log("switched turns to p1");
 				return;
 			}
@@ -175,9 +219,19 @@ function DotsController($scope){
 				return;
 			}	
 		}
-
+		$scope.game.$save();
 	}//end of checkBox
 
+	$scope.reset = function(){
+		$scope.game.board=myBoard;
+		$scope.game.player1score=0;
+		$scope.game.player2score=0;
+		$scope.game.player1wins=false;
+		$scope.game.player2wins=false;
+		$scope.game.$save();
+
+
+	}//end of reset
 
 
 
@@ -187,4 +241,5 @@ function DotsController($scope){
 
 
 
-}//end of DotsController
+
+});//end of DotsController
