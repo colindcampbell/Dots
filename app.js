@@ -25,7 +25,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 	//start of firebase stuff
 	var dotsRef = new Firebase('https://dotsgame.firebaseio.com/games');
 	var lastGame;
-	var playerNum;
+	$scope.playerNum;
 
 	dotsRef.once('value', function(gamesSnapshot){
 
@@ -36,7 +36,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 			//push a new game that starts as waiting
 			lastGame = dotsRef.push( {waiting:true} );
 			console.log(lastGame);
-			playerNum=true;
+			$scope.playerNum=true;
 		}
 		//if there are games do this
 		else{
@@ -47,14 +47,21 @@ var GameApp = angular.module('GameApp', ['firebase'])
 			//If someone is waiting, create a game 
 			if(lastGame.waiting){
 				lastGame = dotsRef.child(lastGameKey);
-				lastGame.set( {player1:'Player 1',player2:'Player 2',turn:true, player1score:0, player2score:0, player1wins:false, player2wins:false, board:myBoard} );
-				playernum = false;
+				lastGame.set( {player1:'Player 1',
+							player2:'Player 2',
+							turn:true, 
+							player1score:17, 
+							player2score:17, 
+							player1wins:false, 
+							player2wins:false, 
+							board:myBoard} );
+				$scope.playerNum = false;
 
 			}
 			//else last game is waiting for someone else
 			else{
 				lastGame = dotsRef.push( {waiting:true } )
-				playerNum = true;
+				$scope.playerNum = true;
 			}
 		//create a new firebase called game with the contents of lastGame
 		$scope.game = $firebase(lastGame);
@@ -107,11 +114,11 @@ var GameApp = angular.module('GameApp', ['firebase'])
 
 	$scope.click = function(row,col){
 
-		if($scope.game.turn&&!playerNum){
+		if($scope.game.turn&&!$scope.playerNum){
 			return;
 		}
 
-		if(!$scope.game.turn&&playerNum){
+		if(!$scope.game.turn&&$scope.playerNum){
 			return;
 		}
 
@@ -182,7 +189,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 	}//end of click function
 
 	$scope.checkBox = function(row, col){
-		if ($scope.game.turn&&playerNum) {
+		if ($scope.game.turn&&$scope.playerNum) {
 			var temp = 0;
 			for(i=1;i<$scope.size*2+4;i++){
 				for (j=1;j<$scope.size*2;j++) {
@@ -208,7 +215,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 			}	
 		}
 
-		else if (!$scope.game.turn&&!playerNum) {
+		else if (!$scope.game.turn&&!$scope.playerNum) {
 			var temp2 = 0;
 			for(k=1;k<$scope.size*2+4;k++){
 				for (l=1;l<$scope.size*2;l++) {
@@ -249,14 +256,14 @@ var GameApp = angular.module('GameApp', ['firebase'])
 	}//end of reset
 
 	$scope.changeName = function(){
-		if(playerNum){
+		if($scope.playerNum){
 			$scope.game.player1 = $scope.name1;
 			$scope.game.$save();
 		}
 	}
 
 	$scope.changeName2 = function(){
-		if(!playerNum){
+		if(!$scope.playerNum){
 			$scope.game.player2 = $scope.name2;
 			$scope.game.$save();
 		}

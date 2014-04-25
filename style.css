@@ -1,7 +1,7 @@
 body{margin: 0px; background-color: #aaaaaa; font-family:'Josefin Sans', tahoma;-webkit-animation: fadeIn 1s ease-in;animation: fadeIn 1s ease-in;}
 button{height: 26px; border: 2px solid black; border-radius: 4px;cursor: pointer;font-size: 16px}
 h2{text-align: center;margin: 2px 0px 7px 0px;font-size: 20px;}
-input{width:80px;text-align: center;height: 20px; border: 2px solid black; border-radius: 4px;font-family: 'Josefin Sans',tahoma;font-size: 14px;position: relative;top:-4px;}
+input{width:80px;text-align: center;height: 20px; border: 2px solid black; border-radius: 4px;font-family: 'Josefin Sans',tahoma;font-size: 14px;position: relative;top:-2px;}
 p{font-size: 16px;}
 
 .bSize{width: 34px;margin-bottom: 0px;position: relative;top: -2px;}

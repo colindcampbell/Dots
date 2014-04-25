@@ -30,7 +30,7 @@
 		
 
 
-		<div x-ng-class="{name:true, hidden:game.player1!='Player 1'}">
+		<div x-ng-class="{name:true, hidden:game.player1!='Player 1'||!playerNum}">
 			<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name1"/><button class="sizeButton" x-ng-click="changeName();" >✓</button>
 		</div>
 		
@@ -75,7 +75,7 @@
 		<div class="flashR" x-ng-if="game.player2wins">Winner</div>
 		<div class="flashR" x-ng-if="game.waiting">Waiting for Player 2</div>
 
-		<div x-ng-class="{name:true, hidden:game.waiting==true||game.player2!='Player 2'}">
+		<div x-ng-class="{name:true, hidden:game.waiting==true||game.player2!='Player 2'||playerNum}">
 			<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name2"/><button class="sizeButton" x-ng-click="changeName2();" >✓</button>
 		</div>
 	</div>
