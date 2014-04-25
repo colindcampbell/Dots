@@ -1,3 +1,6 @@
+
+
+//create a board to shove into firebase
 var myBoard=[];
 var size=5;
 	for(i=0;i<size*2+5;i++){
@@ -13,43 +16,54 @@ var size=5;
 	};
 	console.log(myBoard);
 
+//start of angular stuff and stuff and stuff
 var GameApp = angular.module('GameApp', ['firebase'])
 
 .controller('DotsController', function($scope, $firebase){
 
 	
-
+	//start of firebase stuff
 	var dotsRef = new Firebase('https://dotsgame.firebaseio.com/games');
 	var lastGame;
+	var playerNum;
 
 	dotsRef.once('value', function(gamesSnapshot){
 
 		var games = gamesSnapshot.val();
 
+		//if there aren't any games currently, do this
 		if(games==null){
-
+			//push a new game that starts as waiting
 			lastGame = dotsRef.push( {waiting:true} );
 			console.log(lastGame);
-
+			playerNum=true;
 		}
+		//if there are games do this
 		else{
+			//Find the last game that was created
 			var keys = Object.keys(games);
 			var lastGameKey = keys[keys.length-1];
 			var lastGame = games[lastGameKey];
+			//If someone is waiting, create a game 
 			if(lastGame.waiting){
 				lastGame = dotsRef.child(lastGameKey);
 				lastGame.set( {player1:'Player 1',player2:'Player 2',turn:true, player1score:0, player2score:0, player1wins:false, player2wins:false, board:myBoard} );
+				playernum = false;
+
 			}
+			//else last game is waiting for someone else
 			else{
 				lastGame = dotsRef.push( {waiting:true } )
+				playerNum = true;
 			}
+		//create a new firebase called game with the contents of lastGame
 		$scope.game = $firebase(lastGame);
 
 		}
 		
 	});
 
-
+	//end of firebase stuff
 
 
 	$scope.init=function(size){
@@ -57,10 +71,6 @@ var GameApp = angular.module('GameApp', ['firebase'])
 
 	$scope.size=size;
 	$scope.gameWidth=$scope.size*36+6;
-	
-
-
-
 	$scope.gameBoard ={width:$scope.gameWidth+'px',height:$scope.gameWidth+72+'px'};
 	$scope.center ={width:$scope.gameWidth+20+'px'};
 	$scope.wholeGame ={width:$scope.gameWidth+277+'px'};
@@ -92,13 +102,18 @@ var GameApp = angular.module('GameApp', ['firebase'])
 	// 	['','','','','','','','',''],
 		
 	// ];
-
-	
-	
 }//end of init funciton
 
 
 	$scope.click = function(row,col){
+
+		if($scope.game.turn&&!playerNum){
+			return;
+		}
+
+		if(!$scope.game.turn&&playerNum){
+			return;
+		}
 
 		if($scope.game.player1wins||$scope.game.player2wins){
 			return;
@@ -167,7 +182,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 	}//end of click function
 
 	$scope.checkBox = function(row, col){
-		if ($scope.game.turn) {
+		if ($scope.game.turn&&playerNum) {
 			var temp = 0;
 			for(i=1;i<$scope.size*2+4;i++){
 				for (j=1;j<$scope.size*2;j++) {
@@ -193,7 +208,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 			}	
 		}
 
-		else{
+		else if (!$scope.game.turn&&!playerNum) {
 			var temp2 = 0;
 			for(k=1;k<$scope.size*2+4;k++){
 				for (l=1;l<$scope.size*2;l++) {
@@ -234,15 +249,17 @@ var GameApp = angular.module('GameApp', ['firebase'])
 	}//end of reset
 
 	$scope.changeName = function(){
-
-		$scope.game.player1 = $scope.name1;
-		$scope.game.$save();
+		if(playerNum){
+			$scope.game.player1 = $scope.name1;
+			$scope.game.$save();
+		}
 	}
 
 	$scope.changeName2 = function(){
-
-		$scope.game.player2 = $scope.name2;
-		$scope.game.$save();
+		if(!playerNum){
+			$scope.game.player2 = $scope.name2;
+			$scope.game.$save();
+		}
 	}
 
 

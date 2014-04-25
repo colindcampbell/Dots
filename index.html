@@ -27,10 +27,10 @@
 
 		
 		<div class="flashL" x-ng-if="game.player1wins">Winner</div>
-		<div class="flashL" x-ng-if="game.waiting">Waiting</div>
+		
 
 
-		<div x-ng-class="{name:true, hidden:game.waiting==true||game.player1!='Player 1'}">
+		<div x-ng-class="{name:true, hidden:game.player1!='Player 1'}">
 			<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name1"/><button class="sizeButton" x-ng-click="changeName();" >✓</button>
 		</div>
 		
@@ -73,7 +73,7 @@
 		{{game.player2score}}
 		
 		<div class="flashR" x-ng-if="game.player2wins">Winner</div>
-		<div class="flashR" x-ng-if="game.waiting">Waiting</div>
+		<div class="flashR" x-ng-if="game.waiting">Waiting for Player 2</div>
 
 		<div x-ng-class="{name:true, hidden:game.waiting==true||game.player2!='Player 2'}">
 			<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name2"/><button class="sizeButton" x-ng-click="changeName2();" >✓</button>
@@ -90,8 +90,6 @@
 	
 		<button class="playAgain" x-ng-if="game.player1wins||game.player2wins" x-ng-click="reset();">Play Again</button>
 	
-	<!-- <input class="bSize" x-ng-model="newSize" maxlength="1" placeholder="SIZE">
-	<button class="sizeButton" x-ng-click="init(newSize);">✓</button> -->
 </div>
 	
 
