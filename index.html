@@ -15,12 +15,12 @@
 
 
 </head>
-<body x-ng-app="GameApp" x-ng-controller ="DotsController" x-ng-init="init(5)">
+<body x-ng-app="GameApp" x-ng-controller ="DotsController" x-ng-init="init(5);timer();">
 	
 	
 <div class="game" x-ng-style="wholeGame">
-		
-	<div x-ng-class="{leftPlayer:true,leftTurn:game.turn}">
+		<span></span>
+	<div x-ng-class="{leftPlayer:true,leftTurn:game.turn==1}">
 		<h2>{{game.player1}}</h2>
 		
 		{{game.player1score}}
@@ -48,7 +48,7 @@
 			
 			<div class="row" x-ng-repeat="r in game.board track by $index">
 				<div x-ng-repeat="cell in r track by $index" 
-				x-ng-click="click($parent.$index,$index);" x-ng-class=
+				x-ng-click="click($parent.$index,$index);timer();" x-ng-class=
 				"{
 				left:true,
 				dots:$parent.$even&&$even,
@@ -67,7 +67,7 @@
 
 	
 
-	<div x-ng-class="{rightPlayer:true,rightTurn:!game.waiting&&!game.turn}">
+	<div x-ng-class="{rightPlayer:true,rightTurn:!game.waiting&&game.turn==2}">
 		<h2>{{game.player2}}</h2>
 		
 		{{game.player2score}}
@@ -89,6 +89,7 @@
 <div class="boardSelect">
 	
 		<button class="playAgain" x-ng-if="game.player1wins||game.player2wins" x-ng-click="reset();">Play Again</button>
+		<button class="play" x-ng-if="!game.ready1||!game.ready2" x-ng-click="ready();">Play</button>
 	
 </div>
 	

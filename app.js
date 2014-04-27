@@ -1,5 +1,3 @@
-
-
 //create a board to shove into firebase
 var myBoard=[];
 var size=5;
@@ -21,7 +19,6 @@ var GameApp = angular.module('GameApp', ['firebase'])
 
 .controller('DotsController', function($scope, $firebase){
 
-	
 	//start of firebase stuff
 	var dotsRef = new Firebase('https://dotsgame.firebaseio.com/games');
 	var lastGame;
@@ -49,14 +46,16 @@ var GameApp = angular.module('GameApp', ['firebase'])
 				lastGame = dotsRef.child(lastGameKey);
 				lastGame.set( {player1:'Player 1',
 							player2:'Player 2',
-							turn:true, 
+							turn:0,
 							player1score:17, 
 							player2score:17, 
 							player1wins:false, 
-							player2wins:false, 
+							player2wins:false,
+							ready1:false,
+							ready2:false,
 							board:myBoard} );
-				$scope.playerNum = false;
 
+				$scope.playerNum = false;
 			}
 			//else last game is waiting for someone else
 			else{
@@ -68,13 +67,9 @@ var GameApp = angular.module('GameApp', ['firebase'])
 
 		}
 		
-	});
-
-	//end of firebase stuff
-
+	});//end of firebase stuff
 
 	$scope.init=function(size){
-
 
 	$scope.size=size;
 	$scope.gameWidth=$scope.size*36+6;
@@ -82,91 +77,75 @@ var GameApp = angular.module('GameApp', ['firebase'])
 	$scope.center ={width:$scope.gameWidth+20+'px'};
 	$scope.wholeGame ={width:$scope.gameWidth+277+'px'};
 
-
-	// $scope.game.board=[];
-	// for(i=0;i<$scope.size*2+5;i++){
-	// 	$scope.board.push([]);
-	// 	for(j=0;j<$scope.size*2+1;j++){
-	// 		if((i%2+j%2)==2){
-	// 			$scope.board[i].push(0);
-	// 		}
-	// 		else{
-	// 			$scope.board[i].push('');
-	// 		}
-	// 	}
-	// };
-
-	// $scope.board=[
-	
-	// 	['','','','','','','','',''],
-	// 	['',0,'',0,'',0,'',0,''],
-	// 	['','','','','','','','',''],
-	// 	['',0,'',0,'',0,'',0,''],
-	// 	['','','','','','','','',''],
-	// 	['',0,'',0,'',0,'',0,''],
-	// 	['','','','','','','','',''],
-	// 	['',0,'',0,'',0,'',0,''],
-	// 	['','','','','','','','',''],
-		
-	// ];
 }//end of init funciton
-
 
 	$scope.click = function(row,col){
 
-		if($scope.game.turn&&!$scope.playerNum){
+		//No clicks until game is ready
+		if(!$scope.game.ready1||!$scope.game.ready2){
 			return;
 		}
 
-		if(!$scope.game.turn&&$scope.playerNum){
+		//Player 2 cannot click when it is Player 1's turn
+		if($scope.game.turn==1&&!$scope.playerNum){
 			return;
 		}
-
+		//Player 1 cannot click when it is Player 2's turn
+		if($scope.game.turn==2&&$scope.playerNum){
+			return;
+		}
+		//You cannot click if someone has already won
 		if($scope.game.player1wins||$scope.game.player2wins){
 			return;
 		}
-
+		//You cannot click on a line that has already been clicked
 		if($scope.game.board[row][col]=='H'){
 			return;
 		}
-
+		//You cannot click on the dots or squares
 		if((row%2+col)%2==0){
 			return;
 		}
 
 		$scope.game.board[row][col]='H';
-
+	//Everything below is to add one to the square above/below or left/right of th line that is beng clicked
+		//First is for the horizontal lines, adding to the square above and below
+		//if row is even
 		if(row%2===0){
+			//if not the very top row
 			if(row>0){
+				//create a temporary variable storing the current value below the clicked line
 				$scope.tempUp=$scope.game.board[row-1][col];
+				//loop through and see if that value is equal to 0-3. When it is, add one to the temp variable
 				for(i=0;i<4;i++){
 					if($scope.game.board[row-1][col]==i){
 						$scope.tempUp++;
-						//console.log("up added");
 					}
 				}
+				//Set the div value equal to the temp variable
 				$scope.game.board[row-1][col]=$scope.tempUp;
 				
 			}
+			//Same process for the square above the line that is clicked
 			if(row<$scope.size*2+3){
 				$scope.tempDown=$scope.game.board[row+1][col];
 				for(i=0;i<4;i++){
 					if($scope.game.board[row+1][col]==i){
 						$scope.tempDown++;
-						//console.log("down added");
 					}
 				}
 				$scope.game.board[row+1][col]=$scope.tempDown;
 			}
+		//Run the checkBox function to see if any values have changed to 4
 		$scope.checkBox();
 		}
+		//Do the same thing but for left and right if a vertical div was clicked
 		else{
 			if (col<$scope.size*2) {
 				$scope.tempRight=$scope.game.board[row][col+1];
 				for(i=0;i<4;i++){
 					if($scope.game.board[row][col+1]==i){
 						$scope.tempRight++;
-						//console.log("right added");
 					}
 				}
 				$scope.game.board[row][col+1]=$scope.tempRight;
@@ -177,19 +156,19 @@ var GameApp = angular.module('GameApp', ['firebase'])
 				for(i=0;i<4;i++){
 					if($scope.game.board[row][col-1]==i){
 						$scope.tempLeft++;
-						//console.log("left added");
 					}
 				}
 				$scope.game.board[row][col-1]=$scope.tempLeft;
 				
 			};
 		$scope.checkBox();
-		}
+		//Save all data to firebase
 		$scope.game.$save();
 	}//end of click function
-
+}
+	//Scans the divs to see if any are equal to 4. If so, the player with the current turn gets one point added and they get to go again. If they did not score a point, the turn goes to the next player
 	$scope.checkBox = function(row, col){
-		if ($scope.game.turn&&$scope.playerNum) {
+		if ($scope.game.turn==1&&$scope.playerNum) {
 			var temp = 0;
 			for(i=1;i<$scope.size*2+4;i++){
 				for (j=1;j<$scope.size*2;j++) {
@@ -198,16 +177,19 @@ var GameApp = angular.module('GameApp', ['firebase'])
 						temp++;
 						$scope.game.board[i][j]=8;
 						console.log($scope.game.player1score);
+						$scope.game.$save();
 						if ($scope.game.player1score>($scope.size*($scope.size+2))/2) {
 							// console.log("Player 1 wins");
 							$scope.game.player1wins=true;
+							$scope.game.$save();
 						}
 					}
 				}
 			}
 			if (temp==0) {
-				$scope.game.turn=false;
-				// console.log("switched turns to p2");
+				$scope.game.turn=2;
+				console.log("switched turns to p2");
+				$scope.game.$save();
 				return;
 			}
 			else{
@@ -215,7 +197,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 			}	
 		}
 
-		else if (!$scope.game.turn&&!$scope.playerNum) {
+		else if ($scope.game.turn==2&&!$scope.playerNum) {
 			var temp2 = 0;
 			for(k=1;k<$scope.size*2+4;k++){
 				for (l=1;l<$scope.size*2;l++) {
@@ -224,17 +206,20 @@ var GameApp = angular.module('GameApp', ['firebase'])
 						temp2++;
 						$scope.game.board[k][l]=9;
 						console.log($scope.game.player2score);
+						$scope.game.$save();
 						if ($scope.game.player2score>($scope.size*($scope.size+2))/2) {
 							// console.log("Player 2 wins");
 							$scope.game.player2wins=true;
+							$scope.game.$save();
 
 						}
 					}
 				}
 			}
 			if (temp2==0) {
-				$scope.game.turn=true;
-				// console.log("switched turns to p1");
+				$scope.game.turn=1;
+				console.log("switched turns to p1");
+				$scope.game.$save();
 				return;
 			}
 			else{
@@ -245,14 +230,18 @@ var GameApp = angular.module('GameApp', ['firebase'])
 	}//end of checkBox
 
 	$scope.reset = function(){
+		if($scope.game.turn==1){
+			$scope.game.turn==2;
+		}
+		if($scope.game.turn==2){
+			$scope.game.turn==1;
+		}
 		$scope.game.board=myBoard;
 		$scope.game.player1score=0;
 		$scope.game.player2score=0;
 		$scope.game.player1wins=false;
 		$scope.game.player2wins=false;
 		$scope.game.$save();
-
-
 	}//end of reset
 
 	$scope.changeName = function(){
@@ -269,12 +258,42 @@ var GameApp = angular.module('GameApp', ['firebase'])
 		}
 	}
 
+	$scope.ready = function(){
+		if($scope.playerNum&&!$scope.game.ready1){
+			$scope.game.ready1=true;
+			$scope.game.$save();
+		}
+		if(!$scope.playerNum&&!$scope.game.ready2){
+			$scope.game.ready2=true;
+			$scope.game.$save();
+		}
+		if($scope.game.ready1&&!$scope.game.ready2){
+			$scope.game.turn=1;
+			$scope.game.$save();
+		}
+		if($scope.game.ready2&&!$scope.game.ready1){
+			$scope.game.turn=2;
+			$scope.game.$save();
+		}
 
 
+	}
 
+	// $scope.timer = function($timeout){
+		
+	// 	if($scope.playerNum==false){
+	// 	    $scope.game.turn==2;
+	// 	    $scope.game.$save();
+	// 	    $timeout($scope.timer2(),5000);
+	// 	}
+ //  	}
 
+ //  	$scope.timer2 = function($timeout){
+	// 	console.log("it ran");
+ //  		$scope.game.turn==2;
+ //  		$scope.game.$save();
+ //  		$timeout($scope.timer2, 5000);
 
-
-
+ // 	}
 
 });//end of DotsController

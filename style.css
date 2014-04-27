@@ -62,6 +62,7 @@ p{font-size: 16px;}
   animation-iteration-count: infinite;
   -webkit-animation-duration: 2s;
   animation-duration: 2s;}
+.play{width:120px; height:33px; font-size: 18px;left: -20px;position: relative;top:-156px;}
 
 .p1Colors{border:1px solid #666;border-radius:5px;float:left;width: 18px; height: 18px;background-color: white;cursor:pointer;}
 .p2Colors{width: 18px; height: 18px;border:1px solid #666;border-radius:5px;float: right;}
