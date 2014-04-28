@@ -24,9 +24,11 @@
 		<h2>{{game.player1}}</h2>
 		
 		{{game.player1score}}
+		<h3 x-ng-if="game.player1count>0&&game.player1count<6">({{game.player1count}})</h3>
 
 		
 		<div class="flashL" x-ng-if="game.player1wins">Winner</div>
+		<div class="readyL" x-ng-if="!game.waiting&&(!game.ready1||!game.ready2)">{{game.player1state}}</div>
 		
 
 
@@ -71,8 +73,10 @@
 		<h2>{{game.player2}}</h2>
 		
 		{{game.player2score}}
+		<h3 x-ng-if="game.player2count>0&&game.player2count<6">({{game.player2count}})</h3>
 		
 		<div class="flashR" x-ng-if="game.player2wins">Winner</div>
+		<div class="readyR" x-ng-if="!game.waiting&&(!game.ready1||!game.ready2)">{{game.player2state}}</div>
 		<div class="flashR" x-ng-if="game.waiting">Waiting for Player 2</div>
 
 		<div x-ng-class="{name:true, hidden:game.waiting==true||game.player2!='Player 2'||playerNum}">
@@ -88,8 +92,11 @@
 
 <div class="boardSelect">
 	
-		<button class="playAgain" x-ng-if="game.player1wins||game.player2wins" x-ng-click="reset();">Play Again</button>
-		<button class="play" x-ng-if="!game.ready1||!game.ready2" x-ng-click="ready();">Play</button>
+		<button class="playAgain" x-ng-if="game.player1wins||game.player2wins" x-ng-click="ready();reset();">Play Again</button>
+		<button class="play" x-ng-if="(!game.ready1||!game.ready2)&&(!game.player1wins&&!game.player2wins)" x-ng-click="ready();">Play Game</button>
+		<div x-ng-class="{countDiv1:game.turn==1,countDiv2:game.turn==2}" x-ng-if="game.startCount>0&&game.startCount<11">Game Starts in:<br/>
+			<h3>({{game.startCount}})</h3>
+		</div>
 	
 </div>
 	

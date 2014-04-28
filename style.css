@@ -4,8 +4,8 @@ h2{text-align: center;margin: 2px 0px 7px 0px;font-size: 20px;}
 input{width:80px;text-align: center;height: 20px; border: 2px solid black; border-radius: 4px;font-family: 'Josefin Sans',tahoma;font-size: 14px;position: relative;top:-2px;}
 p{font-size: 16px;}
 
-.bSize{width: 34px;margin-bottom: 0px;position: relative;top: -2px;}
-.sizeButton{width: 26px; margin-bottom: 0px;margin-left: 0px}
+.bSize{width: 34px;margin-bottom: 0px;position: relative;top: 0px;}
+.sizeButton{position:relative;width: 26px; margin-bottom: 0px;margin-left: 0px;top:1px;}
 .boardSelect{width: 82px; margin: 0px auto 5px auto;font-family: tahoma;font-size: 20px; max-height: 35px}
 
 .dots{background-color: black;width: 6px;height:6px;border-radius: 3px;}
@@ -30,7 +30,7 @@ p{font-size: 16px;}
 .linesVclicked:hover{background-color: #666;}
 
 
-.name{position: relative;position: relative;top: -60px;width: 120px;left: -10px; height: 18px}
+.name{position: relative;position: relative;top: -30px;width: 120px;left: -10px; height: 18px;margin-top: 0px}
 .left{float: left;border-radius: 3px;}
 .row{clear:both;}
 .empty{color:#999;background-color: white}
@@ -55,6 +55,9 @@ p{font-size: 16px;}
 .game{margin: 0 auto}
 .point1{background-color: #35c0cd}
 .point2{background-color: #e7003e}
+
+
+
 .playAgain{width:120px; height:33px; font-size: 18px;left: -20px;position: relative;top:-156px;
 	-webkit-animation-name: flash;
   animation-name: flash;
@@ -63,6 +66,13 @@ p{font-size: 16px;}
   -webkit-animation-duration: 2s;
   animation-duration: 2s;}
 .play{width:120px; height:33px; font-size: 18px;left: -20px;position: relative;top:-156px;}
+.countDiv1{width: 140px; margin: 0 auto;position: relative;top:-185px;text-align: center;left:-30px;
+  font-family: 'Josefin Sans'; color: #35c0cd}
+.countDiv2{width: 140px; margin: 0 auto;position: relative;top:-185px;text-align: center;left:-30px;
+  font-family: 'Josefin Sans'; color: #e7003e}
+h3{font-weight: normal;font-size: 70px;margin-top: 0px;margin-bottom: 0px}
+
+
 
 .p1Colors{border:1px solid #666;border-radius:5px;float:left;width: 18px; height: 18px;background-color: white;cursor:pointer;}
 .p2Colors{width: 18px; height: 18px;border:1px solid #666;border-radius:5px;float: right;}
@@ -71,7 +81,7 @@ p{font-size: 16px;}
 
 
 .flashL {
-	font-size: 30px; float: left;color: #35c0cd;
+	font-size: 30px; width:100px;float: left;color: #35c0cd;margin-bottom: 0px;
   -webkit-animation-name: flash;
   animation-name: flash;
   -webkit-animation-iteration-count: infinite;
@@ -79,14 +89,20 @@ p{font-size: 16px;}
   -webkit-animation-duration: 2s;
   animation-duration: 2s;
 }
+.readyL {
+  font-size: 30px; width:100px;float: left;color: #35c0cd;margin-bottom: 0px;
+}
 .flashR {
-	font-size: 30px; float: left;color: #e7003e;
+	font-size: 30px; width:100px;float: left;color: #e7003e;margin-bottom: 0px;
   -webkit-animation-name: flash;
   animation-name: flash;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
   -webkit-animation-duration: 2s;
   animation-duration: 2s;
+}
+.readyR {
+  font-size: 30px; width:100px;float: left;color: #e7003e;margin-bottom: 0px;
 }
 
 @-webkit-keyframes flash {
