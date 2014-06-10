@@ -1,105 +1,79 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Dots</title>
+	<head>
 
-	<link href='https://fonts.googleapis.com/css?family=Josefin+Sans:600' rel='stylesheet' type='text/css'>
-	<script src="angular.min.js"></script>
-	<script src="https://cdn.firebase.com/v0/firebase.js"></script>
-	<script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
-	<script src="app.js"></script>
-	<link rel="stylesheet" type="text/css" href="style.css">
+		<meta charset="UTF-8">
+		<title>Dots</title>
+		<link href='https://fonts.googleapis.com/css?family=Josefin+Sans:600' rel='stylesheet' type='text/css'>
+		<script src="angular.min.js"></script>
+		<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+		<script src="https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js"></script>
+		<script src="app.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+
+	</head>
 	
+	<body x-ng-app="GameApp" x-ng-controller ="DotsController" x-ng-init="init(5);timer();">
+		
+		<div class="game" x-ng-style="wholeGame">
 
-
-</head>
-<body x-ng-app="GameApp" x-ng-controller ="DotsController" x-ng-init="init(5);timer();">
-	
-	
-<div class="game" x-ng-style="wholeGame">
-		<span></span>
-	<div x-ng-class="{leftPlayer:true,leftTurn:game.turn==1}">
-		<h2>{{game.player1}}</h2>
-		
-		{{game.player1score}}
-		<h3 x-ng-if="game.player1count>0&&game.player1count<6">({{game.player1count}})</h3>
-
-		
-		<div class="flashL" x-ng-if="game.player1wins">Winner</div>
-		<div class="readyL" x-ng-if="!game.waiting&&(!game.ready1||!game.ready2)">{{game.player1state}}</div>
-		
-
-
-		<div x-ng-class="{name:true, hidden:game.player1!='Player 1'||!playerNum}">
-			<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name1"/><button class="sizeButton" x-ng-click="changeName();" >✓</button>
-		</div>
-		
-		
-		
-		
-	</div>
-	
-		
-
-
-	<div class="mid" x-ng-style="center">
-		
-		<div class="main" x-ng-style="gameBoard">
-			
-			<div class="row" x-ng-repeat="r in game.board track by $index">
-				<div x-ng-repeat="cell in r track by $index" 
-				x-ng-click="click($parent.$index,$index);timer();" x-ng-class=
-				"{
-				left:true,
-				dots:$parent.$even&&$even,
-				linesH:$parent.$even&&$odd,
-				linesV:$parent.$odd&&$even,
-				squares:$parent.$odd&&$odd,
-				linesHclicked:cell=='H',
-				linesVclicked:cell=='H',
-				point1:cell==8,
-				point2:cell==9
-				}">
+			<div x-ng-class="{leftPlayer:true,leftTurn:game.turn==1}">
+				<h2>{{game.player1}}</h2>
+				{{game.player1score}}
+				<h3 x-ng-if="game.player1count>0&&game.player1count<6">({{game.player1count}})</h3>
+				<div class="flashL" x-ng-if="game.player1wins">Winner</div>
+				<div class="readyL" x-ng-if="!game.waiting&&(!game.ready1||!game.ready2)">{{game.player1state}}</div>
+				<div x-ng-class="{name:true, hidden:game.player1!='Player 1'||!playerNum}">
+					<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name1" autofocus/>
+					<button class="sizeButton" x-ng-click="changeName();" >✓</button>
 				</div>
 			</div>
+
+			<div class="mid" x-ng-style="center">
+				<div class="main" x-ng-style="gameBoard">
+					<div class="row" x-ng-repeat="r in game.board track by $index">
+						<div x-ng-repeat="cell in r track by $index" 
+						x-ng-click="click($parent.$index,$index);timer();" x-ng-class=
+						"{
+						left:true,
+						dots:$parent.$even&&$even,
+						linesH:$parent.$even&&$odd,
+						linesV:$parent.$odd&&$even,
+						squares:$parent.$odd&&$odd,
+						linesHclicked:cell=='H',
+						linesVclicked:cell=='H',
+						point1:cell==8,
+						point2:cell==9
+						}">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div x-ng-class="{rightPlayer:true,rightTurn:!game.waiting&&game.turn==2}">
+				<h2>{{game.player2}}</h2>
+				{{game.player2score}}
+				<h3 x-ng-if="game.player2count>0&&game.player2count<6">({{game.player2count}})</h3>
+				<div class="flashR" x-ng-if="game.player2wins">Winner</div>
+				<div class="readyR" x-ng-if="!game.waiting&&(!game.ready1||!game.ready2)">{{game.player2state}}</div>
+				<div class="flashR" x-ng-if="game.waiting">Waiting for Player 2</div>
+				<div x-ng-class="{name:true, hidden:game.waiting==true||game.player2!='Player 2'||playerNum}">
+					<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name2"/ autofocus>
+					<button class="sizeButton" x-ng-click="changeName2();" >✓</button>
+				</div>									
+			</div>
+
 		</div>
-	</div>
 
-	
-
-	<div x-ng-class="{rightPlayer:true,rightTurn:!game.waiting&&game.turn==2}">
-		<h2>{{game.player2}}</h2>
+		<div class="clear"></div>
+		<div class="boardSelect">
+			<button class="playAgain" x-ng-if="game.player1wins||game.player2wins" x-ng-click="ready();reset();">Play Again</button>
+			<button class="play" x-ng-if="(!game.ready1||!game.ready2)&&(!game.player1wins&&!game.player2wins)" x-ng-click="ready();">Play Game</button>
+			<div x-ng-class="{countDiv1:game.turn==1,countDiv2:game.turn==2}" x-ng-if="game.startCount>0&&game.startCount<11">Game Starts in:<br/>
+				<h3>({{game.startCount}})</h3>
+			</div>
+		</div>
 		
-		{{game.player2score}}
-		<h3 x-ng-if="game.player2count>0&&game.player2count<6">({{game.player2count}})</h3>
-		
-		<div class="flashR" x-ng-if="game.player2wins">Winner</div>
-		<div class="readyR" x-ng-if="!game.waiting&&(!game.ready1||!game.ready2)">{{game.player2state}}</div>
-		<div class="flashR" x-ng-if="game.waiting">Waiting for Player 2</div>
-
-		<div x-ng-class="{name:true, hidden:game.waiting==true||game.player2!='Player 2'||playerNum}">
-			<input maxlength=8 type="text" placeholder="Your Name" x-ng-model="name2"/><button class="sizeButton" x-ng-click="changeName2();" >✓</button>
-		</div>
-	</div>
-	
-</div>
-	
-</div>
-
-<div class="clear"></div>
-
-<div class="boardSelect">
-	
-		<button class="playAgain" x-ng-if="game.player1wins||game.player2wins" x-ng-click="ready();reset();">Play Again</button>
-		<button class="play" x-ng-if="(!game.ready1||!game.ready2)&&(!game.player1wins&&!game.player2wins)" x-ng-click="ready();">Play Game</button>
-		<div x-ng-class="{countDiv1:game.turn==1,countDiv2:game.turn==2}" x-ng-if="game.startCount>0&&game.startCount<11">Game Starts in:<br/>
-			<h3>({{game.startCount}})</h3>
-		</div>
-	
-</div>
-	
-
-</body>
+	</body>
 </html>

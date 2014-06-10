@@ -46,7 +46,7 @@ var GameApp = angular.module('GameApp', ['firebase'])
 				lastGame.set( {player1:'Player 1',
 							player2:'Player 2',
 							turn:0,
-							player1score:0, 
+							player1score:0,
 							player2score:0, 
 							player1wins:false, 
 							player2wins:false,
